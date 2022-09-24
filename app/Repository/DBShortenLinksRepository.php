@@ -17,8 +17,6 @@ class DBShortenLinksRepository implements ShortenLinkRepositoryInterface
 
     public function createShortenLinks(Request $request)
     {
-        // validate the input url
-        $validated = $request->validated();
 
         // check url existes
         $link = ShortLink::where(['link' => $request->link, 'user_id' => $request->user_id])->first();
@@ -40,7 +38,7 @@ class DBShortenLinksRepository implements ShortenLinkRepositoryInterface
             return response()->json(['link' => 'This link is already in !']);
         }
 
-        return response()->json(['expire_date' => $expireDate, 'link' => $request->link, 'shorten_link' => 'http://127.0.0.1:8000/api/' . $shorten_link]);
+        return response()->json(['expire_date' => $expireDate, 'link' => $request->link, 'shorten_link' => url("api/" . $shorten_link)]);
     }
 
     public function shortenLink($shortenLink)
@@ -66,8 +64,8 @@ class DBShortenLinksRepository implements ShortenLinkRepositoryInterface
     public function list(Request $request)
     {
         // get all shorten url for a certen user
-        $shortLinks = shortLink::where('user_id', $request->user_id)->get();
-        return response()->json(['shorten_links' => $shortLinks]);
+        $userShortLinksList = shortLink::where('user_id', $request->user_id)->get();
+        return response()->json(['shorten_links' => $userShortLinksList]);
     }
 
     public function update(Request $request)
@@ -77,7 +75,7 @@ class DBShortenLinksRepository implements ShortenLinkRepositoryInterface
         ShortLink::where(['id' => $request->id, 'user_id' => $request->user_id])->update(['shorten_link' => str::random(6)]);
         $newShortenLink = ShortLink::where(['id' => $request->id, 'user_id' => $request->user_id])->first();
         return response()->json([
-            'new_shorten_link' => 'http://127.0.0.1:8000/api/' . $newShortenLink->shorten_link
+            'new_shorten_link' => url("api/" . $newShortenLink->shorten_link)
         ]);
     }
 
