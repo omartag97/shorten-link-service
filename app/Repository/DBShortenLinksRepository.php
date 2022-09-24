@@ -92,14 +92,13 @@ class DBShortenLinksRepository implements ShortenLinkRepositoryInterface
 
     public function deavtivate(Request $request)
     {
-        $shortenLink = new ShortLink();
+        $shortenLink = ShortLink::where(['id' => $request->id, 'user_id' => $request->user_id]);
         $message = "";
 
         // check if the shorten url is active or deactive
-        if ($shortenLink->active) {
-
+        if ($shortenLink->first()->active) {
             // update active colmun to 0 >> (deactivate shorten url)
-            ShortLink::where(['id' => $request->id, 'user_id' => $request->user_id])->update(['active' => 0]);
+            $shortenLink->update(['active' => 0]);
             $message = "shorten url deactivated successfully!";
         } else {
             $message = "shorten url is already deactivated!";

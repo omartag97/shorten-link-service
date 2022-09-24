@@ -15,6 +15,7 @@ class ShortLinkController extends Controller
 
     private $ShortenLinksRepository;
 
+    // __construct method automatically called when create a object from class 
     public function __construct(ShortenLinkRepositoryInterface $ShortenLinksRepository)
     {
         $this->ShortenLinksRepository  = $ShortenLinksRepository;

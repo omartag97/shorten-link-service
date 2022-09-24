@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('shorten_link');
             $table->string('expire_date');
             $table->bigInteger('visits')->default(0);
-            $table->boolean('exit')->default(0);
             $table->boolean('active')->default(1);
             $table->timestamps();
         });

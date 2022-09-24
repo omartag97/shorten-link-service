@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use App\Http\Requests\RegistrationValidationRequest;
 use App\RepositoryInterface\UserRepositoryInterface;
 use App\Repository\DBUsersRepository;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -21,20 +22,60 @@ class UserController extends Controller
     }
 
 
-    function register(RegistrationValidationRequest $request )
+    function register(Request $request)
     {
+        try {
 
-        $register = $this->UserRepository->register($request);
+            $validateUser = Validator::make($request->all(), [
+                'name' => 'required|min:2|max:100',
+                'email' => 'required|email|unique:users',
+                'password' => 'required|min:8|max:100',
+                'confirm_password' => 'required|same:password',
+            ]);
 
-        return $register ;
+            if ($validateUser->fails()) {
+                return response()->JSON([
+                    'message' => 'Validation error',
+                    'error' => $validateUser->errors(),
+                ], 401);
+            }
+
+            $register = $this->UserRepository->register($request);
+
+            return $register;
+        } catch (\Throwable $th) {
+            return response()->JSON([
+                'message' => 'Validation error',
+                'message' => $th->getMessage(),
+            ], 500);
+        }
     }
 
     function login(Request $request)
     {
+        try {
 
-        $login = $this->UserRepository->login($request);
+            $validateUser = Validator::make($request->all(), [
+                'email' => 'required|email',
+                'password' => 'required|min:8|max:100',
+            ]);
 
-        return $login ;
+            if ($validateUser->fails()) {
+                return response()->JSON([
+                    'message' => 'Validation error',
+                    'error' => $validateUser->errors(),
+                ], 401);
+            }
+
+            $login = $this->UserRepository->login($request);
+
+            return $login;
+        } catch (\Throwable $th) {
+            return response()->JSON([
+                'message' => 'Validation error',
+                'error' => $th->getMessage(),
+            ], 500);
+        }
 
     }
 }
