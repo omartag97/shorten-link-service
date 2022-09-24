@@ -54,10 +54,7 @@ class DBShortenLinksRepository implements ShortenLinkRepositoryInterface
             // exit page redirect to actual link
             return view('redirect', ["shortenURL" => $find->link]);
         } else {
-
-            return response()->json([
-                'message' => 'This link has been deactivated!'
-            ]);
+            return view('redirectBlocked');
         }
     }
 
