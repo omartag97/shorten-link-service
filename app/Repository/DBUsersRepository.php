@@ -43,7 +43,8 @@ class DBUsersRepository implements UserRepositoryInterface
         return response()->json([
             'acces_token' => $user->acces_token,
             'name' => $user->name,
-            'email' => $user->email
+            'email' => $user->email,
+            'id' => $user->id,
         ]);
     }
 
@@ -64,7 +65,8 @@ class DBUsersRepository implements UserRepositoryInterface
             return response()->json([
                 'acces_token' => Auth::user()->acces_token,
                 'email' => Auth::user()->email,
-                'name' => Auth::user()->name
+                'name' => Auth::user()->name,
+                'id' => Auth::user()->id,
             ]);
         } else {
             return response()->JSON([
